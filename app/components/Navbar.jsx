@@ -5,17 +5,18 @@ import Link from "next/link";
 import { useSession } from "../lib/auth-client";
 import { signOut } from "../lib/auth-client";
 import { Button, Spinner } from "@heroui/react";
+import { toast } from "@heroui/react";
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { data: session , isPending} = useSession()
+    const { data: session, isPending,error } = useSession()
 
-    if(isPending){
-         return (
-    <div className="flex items-center gap-4">
-      <Spinner />
-    </div>
-  );
+    if (isPending) {
+        return (
+            <div className="flex items-center gap-4">
+                <Spinner />
+            </div>
+        );
     }
 
     console.log(session);

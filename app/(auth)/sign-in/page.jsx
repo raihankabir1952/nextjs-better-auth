@@ -4,6 +4,9 @@
 import { signIn } from "../../lib/auth-client";
 import { Eye, EyeSlash } from "@gravity-ui/icons";
 import { useState } from "react";
+import { toast } from "@heroui/react";
+import { useRouter } from "next/navigation";
+
 import {
     Button,
     Description,
@@ -17,6 +20,7 @@ import {
 
 const SignInPage = () => {
     const [isVisible, setIsVisible] = useState(false);
+    const router = useRouter();
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -28,10 +32,18 @@ const SignInPage = () => {
 
         const { data: resData, error } = await signIn.email({
             email: data.email,
-            password: data.password,
-            callbackURL: '/'
+            password: data.password
         })
-        console.log(resData, error);
+        if(error){
+            toast.danger('Login Failed',{
+                description: error.message || "Invalid email or password"
+            });
+            return;
+        }
+        toast.success('Login Successfull',{
+            description: "welcome back!",
+        });
+        router.push("/");
     };
 
     return (
@@ -63,9 +75,10 @@ const SignInPage = () => {
                     <Label>Password</Label>
                     <InputGroup>
                         <InputGroup.Input
+                            placeholder="enter your password"
                             className="w-full max-w-[280px]"
                             type={isVisible ? "text" : "password"}
-                            // value={isVisible ? "87$2h.3diua" : "••••••••"}
+                            // value={isVisible ? "" : "enter your password"}
                         />
                         <InputGroup.Suffix className="pe-0">
                             <Button
