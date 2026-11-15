@@ -2,8 +2,11 @@
 "use client";
 
 import React, { useState } from "react";
+import { useSession } from "../lib/auth-client";
 
 const AdminPage = () => {
+    const { data: session, isPending } = useSession();
+
     const [product, setProduct] = useState({
         name: "",
         price: "",
@@ -33,6 +36,21 @@ const AdminPage = () => {
 
         console.log(data);
     };
+
+    // Check session loading
+    if (isPending) {
+        return <p>Loading...</p>;
+    }
+
+    // Check whether user is logged in
+    if (!session) {
+        return <p>Please login first.</p>;
+    }
+
+    // Check admin role
+    if (session.user.role !== "admin") {
+        return <p>You are not authorized to access this page.</p>;
+    }
 
     return (
         <div>

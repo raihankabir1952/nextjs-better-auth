@@ -84,13 +84,12 @@ export default function Navbar() {
                 {/* Desktop Navigation */}
                 <ul className="hidden items-center gap-4 md:flex">
                     <li>
-                        <Link href="#">Products</Link>
+                        <Link href="/Products">Products</Link>
                     </li>
 
                     {session && userRole === "admin" && (
-                        <li className="flex items-center gap-4">
+                        <li>
                             <Link href="/admin">Admin Dashboard</Link>
-                            <Link href="/">Home</Link>
                         </li>
                     )}
 
@@ -151,7 +150,7 @@ export default function Navbar() {
                 <div className="flex flex-col gap-3 border-t border-separator px-6 py-4 md:hidden">
 
                     <Link
-                        href="#"
+                        href="/Products"
                         onClick={() => setIsMenuOpen(false)}
                     >
                         Products
