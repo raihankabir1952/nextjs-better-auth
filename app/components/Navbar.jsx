@@ -148,7 +148,6 @@ export default function Navbar() {
             {/* Mobile Navigation */}
             {isMenuOpen && (
                 <div className="flex flex-col gap-3 border-t border-separator px-6 py-4 md:hidden">
-
                     <Link
                         href="/Products"
                         onClick={() => setIsMenuOpen(false)}
