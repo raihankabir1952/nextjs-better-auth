@@ -1,15 +1,14 @@
+
 "use client";
 
 import { useState } from "react";
 import Link from "next/link";
-import { useSession } from "../lib/auth-client";
-import { signOut } from "../lib/auth-client";
-import { Button, Spinner } from "@heroui/react";
-import { toast } from "@heroui/react";
+import { useSession, signOut } from "../lib/auth-client";
+import { Button, Spinner, toast } from "@heroui/react";
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const { data: session, isPending,error } = useSession()
+    const { data: session, isPending } = useSession();
 
     if (isPending) {
         return (
@@ -19,7 +18,25 @@ export default function Navbar() {
         );
     }
 
-    console.log(session);
+    const handleLogout = async () => {
+        const { error } = await signOut();
+
+        if (error) {
+            toast.danger("Logout Failed", {
+                description: error.message || "Something went wrong",
+            });
+            return;
+        }
+
+        toast.success("Logout Successful", {
+            description: "You have been logged out successfully.",
+        });
+
+        setIsMenuOpen(false);
+    };
+
+    const userImage = session?.user?.image;
+    const userName = session?.user?.name;
 
     return (
         <nav className="sticky top-0 z-40 w-full border-b border-separator bg-background/70 backdrop-blur-lg">
@@ -34,8 +51,6 @@ export default function Navbar() {
                         aria-label="Toggle menu"
                         aria-expanded={isMenuOpen}
                     >
-                        <span className="sr-only">Menu</span>
-
                         <svg
                             className="h-6 w-6"
                             fill="none"
@@ -67,26 +82,33 @@ export default function Navbar() {
 
                 {/* Desktop Navigation */}
                 <ul className="hidden items-center gap-4 md:flex">
-                    <li>
-                        <Link href="#">Features</Link>
-                    </li>
-
-                    <li>
-                        <Link href="#">Dashboard</Link>
-                    </li>
-
-                    <li>
-                        <Link href="#">Pricing</Link>
-                    </li>
+                    <li><Link href="#">Features</Link></li>
+                    <li><Link href="#">Dashboard</Link></li>
+                    <li><Link href="#">Pricing</Link></li>
                 </ul>
 
-                {/* Desktop Auth Buttons */}
+                {/* Desktop Auth */}
                 <div className="hidden items-center gap-4 md:flex">
                     {session ? (
                         <>
-                            <span>Welcome, {session.user.name}</span>
+                            <div className="flex items-center gap-2">
+                                {userImage ? (
+                                    <img
+                                        src={userImage}
+                                        alt="Profile"
+                                        className="h-9 w-9 rounded-full border object-cover"
+                                    />
+                                ) : (
+                                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-default-200 font-semibold">
+                                        {userName?.charAt(0).toUpperCase()}
+                                    </div>
+                                )}
+
+                                <span>Welcome, {userName}</span>
+                            </div>
+
                             <Button
-                                onPress={() => signOut()}
+                                onPress={handleLogout}
                                 className="rounded-lg bg-red-700 px-4 py-2 text-white"
                             >
                                 Logout
@@ -97,6 +119,7 @@ export default function Navbar() {
                             <Link href="/sign-in" prefetch={false}>
                                 Login
                             </Link>
+
                             <Link
                                 href="/sign-up"
                                 prefetch={false}
@@ -105,35 +128,38 @@ export default function Navbar() {
                                 Sign up
                             </Link>
                         </>
-                    )
-                    }
-
-                    {/* <Link
-                        href="/sign-up"
-                        prefetch={false}
-                        className="rounded-lg bg-primary px-4 py-2 text-white"
-                    >
-                        Sign Up
-                    </Link> */}
+                    )}
                 </div>
             </header>
 
             {/* Mobile Navigation */}
             {isMenuOpen && (
-                <li className="mt-4 flex flex-col gap-3 border-t border-separator pt-4">
+                <div className="flex flex-col gap-3 border-t border-separator px-6 py-4 md:hidden">
+
                     {session ? (
                         <>
-                            <span className="block py-2">
-                                Welcome, {session.user.name}
-                            </span>
+                            <div className="flex items-center gap-3 py-2">
+                                {userImage ? (
+                                    <img
+                                        src={userImage}
+                                        alt="Profile"
+                                        className="h-10 w-10 rounded-full border object-cover"
+                                    />
+                                ) : (
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-default-200 font-semibold">
+                                        {userName?.charAt(0).toUpperCase()}
+                                    </div>
+                                )}
 
-                            <Link
-                                href="/logout"
-                                className="block py-2"
-                                onClick={() => setIsMenuOpen(false)}
+                                <span>Welcome, {userName}</span>
+                            </div>
+
+                            <Button
+                                onPress={handleLogout}
+                                className="w-full rounded-lg bg-red-700 text-white"
                             >
                                 Logout
-                            </Link>
+                            </Button>
                         </>
                     ) : (
                         <>
@@ -156,7 +182,7 @@ export default function Navbar() {
                             </Link>
                         </>
                     )}
-                </li>
+                </div>
             )}
         </nav>
     );

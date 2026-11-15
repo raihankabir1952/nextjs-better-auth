@@ -18,21 +18,63 @@ import { signUp } from "../../lib/auth-client";
 const SignUpPage = () => {
     const [profileImage, setProfileImage] = useState(null); // for profile image
 
+
+    const uploadImage = async () => {
+        if (!profileImage) return null;
+
+        const formData = new FormData();
+
+        formData.append("image", profileImage);
+
+        const response = await fetch("/api/upload", {
+            method: "POST",
+            body: formData,
+        });
+
+        const result = await response.json();
+
+        console.log(result);
+
+        return result;
+    };
+
+
     const onSubmit = async (e) => {
         e.preventDefault();
 
         const formData = new FormData(e.currentTarget);
         const data = Object.fromEntries(formData.entries());
 
-        // Convert FormData to plain object
-        console.log("Form submitted with:", data);
+        // Step 1: Upload image to ImgBB
+        const uploadResult = profileImage
+            ? await uploadImage()
+            : null;
 
-        const { data: resData, error } = await signUp.email({
+        // Step 2: Check upload result
+        if (profileImage && !uploadResult?.success) {
+            alert("Profile image upload failed");
+            return;
+        }
+
+        // Step 3: Prepare signup data
+        const signupData = {
             name: data.name,
             email: data.email,
-            password: data.password
-        })
-        console.log(resData, error);
+            password: data.password,
+        };
+
+        // Step 4: Add image URL if available
+        if (uploadResult?.imageUrl) {
+            signupData.image = uploadResult.imageUrl;
+        }
+        console.log("Image URL being sent:", signupData.image);
+
+        // Step 5: Register user with Better Auth
+        const { data: resData, error } = await signUp.email(signupData);
+
+        console.log("Signup Error:", error);
+        console.log("User Image URL:", resData?.user?.image);
+        console.log("Signup Response:", resData);
     };
 
     return (
