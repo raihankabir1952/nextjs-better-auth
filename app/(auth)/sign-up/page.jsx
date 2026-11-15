@@ -13,9 +13,12 @@ import {
     TextField,
 } from "@heroui/react";
 import { signUp } from "../../lib/auth-client";
+import { useRouter } from "next/navigation";
 
 
 const SignUpPage = () => {
+    const router = useRouter();
+
     const [profileImage, setProfileImage] = useState(null); // for profile image
 
 
@@ -72,9 +75,10 @@ const SignUpPage = () => {
         // Step 5: Register user with Better Auth
         const { data: resData, error } = await signUp.email(signupData);
 
-        console.log("Signup Error:", error);
-        console.log("User Image URL:", resData?.user?.image);
-        console.log("Signup Response:", resData);
+        if (resData) {
+            router.push("/sign-in");
+        }
+
     };
 
     return (

@@ -10,6 +10,10 @@ export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { data: session, isPending } = useSession();
 
+    const userImage = session?.user?.image;
+    const userName = session?.user?.name;
+    const userRole = session?.user?.role;
+
     if (isPending) {
         return (
             <div className="flex items-center gap-4">
@@ -34,9 +38,6 @@ export default function Navbar() {
 
         setIsMenuOpen(false);
     };
-
-    const userImage = session?.user?.image;
-    const userName = session?.user?.name;
 
     return (
         <nav className="sticky top-0 z-40 w-full border-b border-separator bg-background/70 backdrop-blur-lg">
@@ -82,9 +83,22 @@ export default function Navbar() {
 
                 {/* Desktop Navigation */}
                 <ul className="hidden items-center gap-4 md:flex">
-                    <li><Link href="#">Features</Link></li>
-                    <li><Link href="#">Dashboard</Link></li>
-                    <li><Link href="#">Pricing</Link></li>
+                    <li>
+                        <Link href="#">Products</Link>
+                    </li>
+
+                    {session && userRole === "admin" && (
+                        <li className="flex items-center gap-4">
+                            <Link href="/admin">Admin Dashboard</Link>
+                            <Link href="/">Home</Link>
+                        </li>
+                    )}
+
+                    {session && userRole === "customer" && (
+                        <li>
+                            <Link href="/orders">My Orders</Link>
+                        </li>
+                    )}
                 </ul>
 
                 {/* Desktop Auth */}
@@ -136,8 +150,33 @@ export default function Navbar() {
             {isMenuOpen && (
                 <div className="flex flex-col gap-3 border-t border-separator px-6 py-4 md:hidden">
 
+                    <Link
+                        href="#"
+                        onClick={() => setIsMenuOpen(false)}
+                    >
+                        Products
+                    </Link>
+
                     {session ? (
                         <>
+                            {userRole === "admin" && (
+                                <Link
+                                    href="/admin"
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    Admin Dashboard
+                                </Link>
+                            )}
+
+                            {userRole === "customer" && (
+                                <Link
+                                    href="/orders"
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    My Orders
+                                </Link>
+                            )}
+
                             <div className="flex items-center gap-3 py-2">
                                 {userImage ? (
                                     <img
