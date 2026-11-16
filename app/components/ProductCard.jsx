@@ -1,7 +1,6 @@
-
 import React from "react";
 
-const ProductCard = ({ product, isAdmin, onDelete }) => {
+const ProductCard = ({ product, isAdmin, onDelete, onEdit }) => {
     return (
         <div className="border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
 
@@ -25,16 +24,25 @@ const ProductCard = ({ product, isAdmin, onDelete }) => {
                 <p className="text-lg font-bold mt-3">
                     ৳{product.price}
                 </p>
+
                 {isAdmin && (
-                    <button
-                        onClick={() => onDelete(product._id)}
-                        className="mt-4 bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
-                    >
-                        Delete
-                    </button>
+                    <div className="flex gap-3 mt-4">
+                        <button
+                            onClick={() => onEdit(product)}
+                            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                        >
+                            Edit
+                        </button>
+
+                        <button
+                            onClick={() => onDelete(product._id)}
+                            className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600"
+                        >
+                            Delete
+                        </button>
+                    </div>
                 )}
             </div>
-
         </div>
     );
 };
