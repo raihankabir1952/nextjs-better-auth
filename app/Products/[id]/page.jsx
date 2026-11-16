@@ -1,6 +1,7 @@
 
 import React from "react";
 import { notFound } from "next/navigation";
+import BuyNowButton from "../../components/BuyNowButton";
 
 export const instant = false;
 
@@ -44,9 +45,7 @@ const ProductDetailsPage = async ({ params }) => {
                         ৳{product.price}
                     </p>
 
-                    <button className="mt-6 bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-                        Buy Now
-                    </button>
+                    <BuyNowButton productId={product._id.toString()} />
 
                 </div>
 
