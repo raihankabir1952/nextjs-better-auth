@@ -1,21 +1,26 @@
 import React from "react";
+import Link from "next/link";
 
 const ProductCard = ({ product, isAdmin, onDelete, onEdit }) => {
     return (
         <div className="border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
 
             {product.image && (
-                <img
-                    src={product.image}
-                    alt={product.name}
-                    className="w-full h-48 object-cover"
-                />
+                <Link href={`/Products/${product._id}`}>
+                    <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-48 object-cover"
+                    />
+                </Link>
             )}
 
             <div className="p-4">
-                <h3 className="text-lg font-semibold">
-                    {product.name}
-                </h3>
+                <Link href={`/Products/${product._id}`}>
+                    <h3 className="text-lg font-semibold hover:text-blue-600">
+                        {product.name}
+                    </h3>
+                </Link>
 
                 <p className="text-sm text-gray-500 mt-1">
                     {product.category}
