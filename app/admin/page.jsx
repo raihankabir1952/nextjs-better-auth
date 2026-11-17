@@ -21,6 +21,16 @@ const AdminPage = () => {
         });
     };
 
+    //check backend session
+    const checkBackendSession = async () => {
+        const res = await fetch('http://localhost:5000/api/me', {
+            credentials: "include"
+        })
+        const data = await res.json();
+        console.log("Backend Session", data);
+    }
+
+    // handle submit function
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -102,6 +112,11 @@ const AdminPage = () => {
                 </div>
 
                 <button type="submit">Add Product</button>
+                <button
+                    onClick={checkBackendSession}
+                >
+                    Check Backend Session
+                </button>
             </form>
         </div>
     );
